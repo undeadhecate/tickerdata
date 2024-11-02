@@ -16,14 +16,11 @@ def read_root(ticker: str,exchange: str):
 
         # Find the element by class name
         # Replace 'your-class-name' with the actual class name
-        element = soup.find(class_='YMlKec fxKbKc')
+        element1 = soup.find(class_='YMlKec fxKbKc')
+        element2 = soup.find(class_='zzDege')
 
-        if element:
-            # Print the text content of the element
-            print(element.text)
-        else:
-            print("Element with the specified class not found.")
-    return {"ticker": ticker,"exchange":exchange,'value':element.text,'asd':'asdf'}
+
+    return {"ticker": ticker,"exchange":exchange,'value':element1.text,'realname':element2.text}
 
 
 @app.get("/items/{item_id}")
