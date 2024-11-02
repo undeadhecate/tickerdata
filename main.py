@@ -1,27 +1,29 @@
 from typing import Union
-from selenium import webdriver
-import lxml.etree
-from lxml import html
+from bs4 import BeautifulSoup
+
 from fastapi import FastAPI
 import requests
-from lxml.cssselect import CSSSelector
 app = FastAPI()
 
 
 @app.get("/quote/{ticker}/{exchange}")
 def read_root(ticker: str,exchange: str):
-    url =("https://www.google.com/finance/quote/"+ticker+":"+exchange)
-    xpath = '/html/body/c-wiz[2]/div/div[4]/div/main/div[2]/div[1]/div[1]/c-wiz/div/div[1]/div/div[1]/div/div[1]/div/span/div/div'
+    response =requests.get("https://www.google.com/finance/quote/"+ticker+":"+exchange)
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the HTML content
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-    browser = webdriver.Firefox()
-    browser.get(url)
-    html_source = browser.page_source
+        # Find the element by class name
+        # Replace 'your-class-name' with the actual class name
+        element = soup.find(class_='YMlKec fxKbKc')
 
-    tree = html.fromstring(html_source)
-    text = tree.xpath(xpath)
-    for i in text:
-        print(i.text)
-    return {"ticker": ticker,"exchange":exchange,'value':text[0].text,'asd':'asdf'}
+        if element:
+            # Print the text content of the element
+            print(element.text)
+        else:
+            print("Element with the specified class not found.")
+    return {"ticker": ticker,"exchange":exchange,'value':element.text,'asd':'asdf'}
 
 
 @app.get("/items/{item_id}")
