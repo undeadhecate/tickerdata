@@ -6,21 +6,25 @@ import requests
 app = FastAPI()
 
 
-@app.get("/quote/{ticker}/{exchange}")
-def read_root(ticker: str,exchange: str):
-    response =requests.get("https://www.google.com/finance/quote/"+ticker+":"+exchange)
-    # Check if the request was successful
-    if response.status_code == 200:
-        # Parse the HTML content
-        soup = BeautifulSoup(response.text, 'html.parser')
+@app.get("/quote/")
+def read_root(URL: str):
+    # https://g.co/finance/AAPL34:BVMF
+    teststring="https://g.co/finance/"
+    if URL[0:21]==teststring and len(URL)<40 :
 
-        # Find the element by class name
-        # Replace 'your-class-name' with the actual class name
-        element1 = soup.find(class_='YMlKec fxKbKc')
-        element2 = soup.find(class_='zzDege')
+        response =requests.get(URL)
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Parse the HTML content
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            # Find the element by class name
+            # Replace 'your-class-name' with the actual class name
+            element1 = soup.find(class_='YMlKec fxKbKc')
+            element2 = soup.find(class_='zzDege')
 
 
-    return {"ticker": ticker,"exchange":exchange,'value':element1.text,'realname':element2.text}
+        return {'data':{'value':element1.text,'realname':element2.text}}
 
 
 @app.get("/items/{item_id}")
